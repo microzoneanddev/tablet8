@@ -221,14 +221,17 @@
 
 <div class="slider-container" id="slider">
   <!-- SLIDES -->
-  <div class="slide active" style="background-image: url('Frame 1.png');"></div>
+  <div class="slide active" style="background-image: url('Frame 1.png'); cursor: pointer;"></div>
 
   <div class="slide" style="background-image: url('Frame 2.png');">
     <!-- MENU HOTSPOTS ON SECOND SLIDE -->
     <div class="menu-areas">
       <div class="hotspot" data-target="2" style="top: 30%; left: 25%; width: 20%; height: 10%;"></div>
-      <div class="hotspot" data-target="4" style="top: 30%; left: 51%; width: 25%; height: 12%;"></div>
+      <div class="hotspot" data-target="5" style="top: 30%; left: 51%; width: 25%; height: 12%;"></div>
       <div class="hotspot" data-target="3" style="top: 46%; left: 25%; width: 24%; height: 12%;"></div>
+      <div class="hotspot" data-target="6" style="top: 50%; left: 51%; width: 25%; height: 12%;"></div>
+      <div class="hotspot" data-target="4" style="top: 66%; left: 27%; width: 20%; height: 12%;"></div>
+      <div class="hotspot" data-target="7" style="top: 70%; left: 51%; width: 20%; height: 12%;"></div>
     </div>
   </div>
 
@@ -236,6 +239,9 @@
   <div class="slide" style="background-image: url('Frame 4.png');"></div>
   <div class="slide" style="background-image: url('Frame 5.png');"></div>
   <div class="slide" style="background-image: url('Frame 6.png');"></div>
+  <div class="slide" style="background-image: url('Frame 7.png');"></div>
+  <div class="slide" style="background-image: url('Frame 8.png');"></div>
+  <div class="slide" style="background-image: url('Frame 9.png');"></div>
 
   <!-- CONTROLS (hidden by default) -->
   <div class="arrow left hidden"></div>
@@ -577,8 +583,16 @@
   });
 
   prevBtn.addEventListener('click', () => {
+    currentSlide = current;
     current = (current - 1 + slides.length) % slides.length;
     showSlide(current);
+
+    setTimeout(() => {
+      if( currentSlide == 1 ) {
+        showSlide(0);
+        current = 0;
+      }
+    }, 100);
   });
 
   backToMain.addEventListener('click', () => {
@@ -621,11 +635,33 @@
       }
     }
   });
+
+  // --- AUTO RESET ON USER INACTIVITY ---
+  let inactivityTimer;
+
+  // Function to reset slider to first screen
+  function resetToFirstSlide() {
+    current = 0;
+    showSlide(current);
+  }
+
+  // Function to start or restart inactivity timer
+  function restartInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(resetToFirstSlide, 30000); // 30 seconds
+  }
+
+  // List of user activity events
+  const activityEvents = ['mousemove', 'mousedown', 'keypress', 'touchstart', 'click'];
+
+  // Add listeners to detect activity
+  activityEvents.forEach(event => {
+    document.addEventListener(event, restartInactivityTimer, { passive: true });
+  });
+
+  // Start the timer initially
+  restartInactivityTimer();
 </script>
 
 </body>
 </html>
-
-
-
-
